@@ -1,0 +1,939 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ফর ফেরদাউস | একটি বিশেষ আয়োজন 🌙</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Anek+Bangla:wght@300;500;700;800&family=Hind+Siliguri:wght@300;400;600;700&family=Outfit:wght@200;400;600;800&family=Poppins:ital,wght@0,300;0,500;0,700;1,300&display=swap" rel="stylesheet">
+
+    <style>
+        /* --- DESIGN SYSTEM & CSS VARIABLES --- */
+        :root {
+            --bg-dark: #030208;
+            --accent-purple: #8b5cf6;
+            --accent-pink: #ec4899;
+            --lantern-gold: #f59e0b;
+            --moon-glow: rgba(255, 255, 255, 0.85);
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --glass-bg: rgba(255, 255, 255, 0.02);
+            --glass-border: rgba(255, 255, 255, 0.06);
+            
+            /* --- TYPOGRAPHY UPGRADE --- */
+            --font-bengali-title: 'Anek Bangla', sans-serif;
+            --font-bengali-body: 'Hind Siliguri', sans-serif;
+            --font-english-title: 'Outfit', sans-serif;
+            --font-english-body: 'Poppins', sans-serif;
+        }
+
+        /* --- BASE STYLES --- */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            user-select: none;
+            -webkit-user-drag: none;
+        }
+
+        html, body {
+            background-color: var(--bg-dark);
+            height: 100vh;
+            width: 100vw;
+            overflow: hidden; 
+            font-family: var(--font-bengali-body);
+            color: var(--text-main);
+            cursor: none;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        /* --- GLOBAL BACKGROUND DECORATIONS --- */
+        #fx-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+            pointer-events: none;
+        }
+
+        #cursor-glow {
+            position: fixed;
+            width: 350px;
+            height: 350px;
+            background: radial-gradient(circle, rgba(139, 92, 246, 0.08) 0%, rgba(236, 72, 153, 0.02) 60%, transparent 100%);
+            border-radius: 50%;
+            pointer-events: none;
+            transform: translate(-50%, -50%);
+            z-index: 9999;
+        }
+
+        .fog-layer {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 250px;
+            background: linear-gradient(to top, rgba(11, 8, 20, 0.4), transparent);
+            z-index: 2;
+            pointer-events: none;
+            animation: fogMove 20s ease-in-out infinite alternate;
+        }
+
+        @keyframes fogMove {
+            0% { transform: scaleX(1) translateY(10px); opacity: 0.5; }
+            100% { transform: scaleX(1.1) translateY(-10px); opacity: 0.8; }
+        }
+
+        .mosque-silhouette {
+            position: fixed;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100%;
+            max-width: 1400px;
+            height: auto;
+            opacity: 0.07;
+            z-index: 2;
+            pointer-events: none;
+        }
+
+        /* --- SLIDE APP ARCHITECTURE --- */
+        .app-slide {
+            position: fixed;
+            inset: 0;
+            width: 100vw;
+            height: 100vh;
+            display: none; 
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            z-index: 3;
+        }
+
+        .app-slide.active-slide {
+            display: flex;
+            animation: slideFadeIn 0.8s cubic-bezier(0.165, 0.84, 0.44, 1) forwards;
+        }
+
+        @keyframes slideFadeIn {
+            0% { opacity: 0; transform: scale(0.97) translateY(10px); filter: blur(5px); }
+            100% { opacity: 1; transform: scale(1) translateY(0); filter: blur(0); }
+        }
+
+        /* --- GLASSMORPHISM PATTERN --- */
+        .glass-card {
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            backdrop-filter: blur(25px);
+            -webkit-backdrop-filter: blur(25px);
+            border-radius: 24px;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.4);
+            transition: all 0.5s cubic-bezier(0.165, 0.84, 0.44, 1);
+        }
+
+        .container {
+            width: 100%;
+            max-width: 1000px;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        /* --- UPGRADED TITLES TO ANEK BANGLA --- */
+        .section-title {
+            font-family: var(--font-bengali-title);
+            font-size: 2.6rem;
+            font-weight: 700;
+            text-align: center;
+            margin-bottom: 40px;
+            letter-spacing: -0.5px;
+            background: linear-gradient(to bottom, #ffffff, #cbd5e1);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 2px 10px rgba(0,0,0,0.5);
+        }
+
+        .section-title span {
+            font-weight: 800;
+            background: linear-gradient(45deg, var(--accent-purple), var(--accent-pink));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        /* --- CONTROLS & NAVIGATION BUTTON TYPOGRAPHY --- */
+        .nav-btn-container {
+            margin-top: 40px;
+            z-index: 10;
+        }
+
+        .glow-btn {
+            background: transparent;
+            border: 1px solid rgba(255,255,255,0.15);
+            padding: 14px 44px;
+            font-size: 1.05rem;
+            font-weight: 600;
+            color: #fff;
+            border-radius: 100px;
+            cursor: pointer;
+            font-family: var(--font-bengali-body);
+            letter-spacing: 0.5px;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.4);
+        }
+
+        .glow-btn:hover {
+            border-color: transparent;
+            transform: scale(1.05);
+            box-shadow: 0 0 25px rgba(139, 92, 246, 0.5);
+            background: linear-gradient(45deg, var(--accent-purple), var(--accent-pink));
+        }
+
+        /* --- PRELOADER --- */
+        #loader-screen {
+            position: fixed;
+            inset: 0;
+            background: #020105;
+            z-index: 10000;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: opacity 1s cubic-bezier(0.77, 0, 0.175, 1);
+        }
+
+        .loader-lantern {
+            font-size: 3rem;
+            animation: lanternPulse 2s ease-in-out infinite;
+            filter: drop-shadow(0 0 15px var(--lantern-gold));
+        }
+
+        @keyframes lanternPulse {
+            0%, 100% { transform: scale(1); opacity: 0.6; }
+            50% { transform: scale(1.15); opacity: 1; }
+        }
+
+        /* --- AUDIO SYSTEM --- */
+        .audio-wrapper {
+            position: fixed;
+            top: 30px;
+            right: 30px;
+            z-index: 5000;
+        }
+
+        .audio-btn {
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            padding: 14px;
+            border-radius: 50%;
+            cursor: pointer;
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            display: flex;
+            transition: all 0.4s ease;
+        }
+
+        .audio-btn:hover {
+            border-color: var(--accent-pink);
+            box-shadow: 0 0 15px rgba(236, 72, 153, 0.3);
+        }
+
+        .audio-btn svg { width: 20px; height: 20px; fill: var(--text-main); }
+
+        /* =========================================
+           SLIDE 1: HERO (ELEGANT HERO TEXTS)
+           ========================================= */
+        .hero-sky { text-align: center; position: relative; }
+        .eid-moon {
+            font-size: 5.5rem;
+            position: absolute;
+            top: -150px;
+            left: 50%;
+            transform: translateX(-50%);
+            filter: drop-shadow(0 0 35px rgba(255,255,255,0.6));
+            animation: moonFloat 4s ease-in-out infinite alternate;
+        }
+        @keyframes moonFloat {
+            0% { transform: translateX(-50%) translateY(0); }
+            100% { transform: translateX(-50%) translateY(-12px); }
+        }
+        .hanging-lantern {
+            position: absolute;
+            top: -240px;
+            left: calc(50% - 190px);
+            font-size: 2.2rem;
+            transform-origin: top center;
+            animation: lanternSway 3s ease-in-out infinite alternate;
+            filter: drop-shadow(0 0 10px var(--lantern-gold));
+        }
+        @keyframes lanternSway { 0% { transform: rotate(-7deg); } 100% { transform: rotate(7deg); } }
+        
+        .hero-title { 
+            font-family: var(--font-bengali-title);
+            font-size: 3.2rem; 
+            font-weight: 800; 
+            margin-bottom: 24px; 
+            margin-top: 50px;
+            background: linear-gradient(135deg, #ffffff 30%, var(--accent-pink));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 4px 20px rgba(236, 72, 153, 0.15);
+        }
+        .hero-subtitle { 
+            font-family: var(--font-bengali-body);
+            font-size: 1.15rem; 
+            font-weight: 300;
+            line-height: 1.8;
+            color: var(--text-muted); 
+            max-width: 550px; 
+            margin: 0 auto 30px auto; 
+        }
+
+        /* =========================================
+           SLIDE 2: ROMANTIC SMS
+           ========================================= */
+        .sms-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; width: 100%; }
+        .sms-card { padding: 35px 25px; cursor: pointer; position: relative; overflow: hidden; display: flex; flex-direction: column; justify-content: space-between; }
+        .sms-card:hover { border-color: rgba(236, 72, 153, 0.3); transform: translateY(-5px); }
+        
+        .sms-text { 
+            font-family: var(--font-bengali-body);
+            font-size: 1.05rem; 
+            line-height: 1.9; 
+            color: #e2e8f0; 
+            font-weight: 400; 
+        }
+        .sms-card-footer { 
+            margin-top: 25px; 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            font-family: var(--font-english-title);
+            font-size: 0.78rem; 
+            font-weight: 600;
+            letter-spacing: 1px;
+            color: var(--text-muted); 
+        }
+        .copy-tag { 
+            font-family: var(--font-bengali-body);
+            font-size: 0.8rem;
+            font-weight: 400;
+            background: rgba(255,255,255,0.04); 
+            padding: 4px 12px; 
+            border-radius: 30px; 
+            border: 1px solid rgba(255,255,255,0.05);
+        }
+        .sms-card:hover .copy-tag { background: var(--accent-pink); color: #fff; border-color: transparent;}
+
+        /* =========================================
+           SLIDE 3: HIDDEN LOVE & MODAL
+           ========================================= */
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(3, 2, 8, 0.96);
+            z-index: 10000;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.6s ease;
+        }
+        .modal-overlay.open { opacity: 1; pointer-events: auto; }
+        .love-modal { max-width: 520px; width: 90%; padding: 45px; text-align: center; border: 1px solid rgba(236, 72, 153, 0.2); }
+        
+        .giant-ily { 
+            font-family: var(--font-english-title); 
+            font-size: 4rem; 
+            font-weight: 800; 
+            margin-bottom: 20px; 
+            letter-spacing: -1px;
+            background: linear-gradient(to right, #fff, var(--accent-pink)); 
+            -webkit-background-clip: text; 
+            -webkit-text-fill-color: transparent; 
+        }
+        .modal-message { 
+            font-family: var(--font-bengali-body);
+            font-size: 1.1rem; 
+            line-height: 1.9; 
+            color: #cbd5e1; 
+            margin-bottom: 30px; 
+        }
+
+        /* =========================================
+           SLIDE 4: PERSONAL MEMORY GALLERY
+           ========================================= */
+        .gallery-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; width: 100%; }
+        .memory-card { perspective: 1000px; height: 320px; cursor: pointer; }
+        .card-inner { position: relative; width: 100%; height: 100%; transform-style: preserve-3d; transition: transform 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+        .memory-card:hover .card-inner { transform: rotateY(180deg); }
+        .card-front, .card-back { position: absolute; width: 100%; height: 100%; backface-visibility: hidden; border-radius: 20px; overflow: hidden; }
+        .card-front { border: 1px solid var(--glass-border); }
+        .card-front img { width: 100%; height: 100%; object-fit: cover; filter: grayscale(100%); transition: all 0.5s; }
+        .memory-card:hover .card-front img { filter: grayscale(0%) scale(1.03); }
+        
+        .card-back { background: rgba(15, 12, 28, 0.98); border: 1px solid rgba(139, 92, 246, 0.3); transform: rotateY(180deg); display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 25px; text-align: center; }
+        .card-back h4 { 
+            font-family: var(--font-bengali-title);
+            font-size: 1.35rem; 
+            font-weight: 700;
+            margin-bottom: 12px; 
+            color: var(--accent-purple); 
+        }
+        .card-back p { 
+            font-family: var(--font-bengali-body);
+            font-size: 0.95rem; 
+            line-height: 1.7; 
+            color: var(--text-muted); 
+        }
+
+        /* =========================================
+           SLIDE 5: TIMELINE
+           ========================================= */
+        .timeline-container { position: relative; max-width: 650px; width: 100%; margin: 0 auto; }
+        .timeline-container::before { content: ''; position: absolute; left: 25px; top: 0; bottom: 0; width: 1px; background: linear-gradient(to bottom, transparent, var(--accent-purple), var(--accent-pink), transparent); }
+        .timeline-item { position: relative; margin-bottom: 35px; padding-left: 60px; }
+        .timeline-dot { position: absolute; left: 25px; top: 22px; width: 10px; height: 10px; background: var(--bg-dark); border: 2px solid var(--accent-pink); border-radius: 50%; z-index: 5; transform: translateX(-50%); }
+        .timeline-body { padding: 22px 28px; }
+        
+        .timeline-time { 
+            font-family: var(--font-english-title); 
+            font-size: 0.85rem; 
+            font-weight: 600;
+            color: var(--accent-purple); 
+            display: block; 
+            margin-bottom: 6px; 
+            letter-spacing: 0.5px;
+        }
+        .timeline-body h3 { 
+            font-family: var(--font-bengali-title);
+            font-size: 1.25rem; 
+            font-weight: 700;
+            margin-bottom: 6px; 
+        }
+        .timeline-body p { 
+            font-family: var(--font-bengali-body);
+            font-size: 0.98rem; 
+            line-height: 1.7; 
+            color: var(--text-muted); 
+        }
+
+        /* =========================================
+           SLIDE 6: SCRATCH CARD
+           ========================================= */
+        .scratch-card-wrapper { position: relative; width: 320px; height: 180px; border-radius: 20px; overflow: hidden; box-shadow: 0 15px 35px rgba(0,0,0,0.5); border: 1px solid var(--glass-border); margin: 20px 0; }
+        .scratch-secret-text { position: absolute; inset: 0; background: #0d0b18; display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 1; }
+        .scratch-secret-text h3 { font-family: var(--font-english-title); font-size: 2.2rem; color: var(--accent-pink); font-weight: 800; letter-spacing: -0.5px; }
+        .scratch-secret-text p { font-family: var(--font-english-body); font-size: 0.85rem; color: var(--text-muted); margin-top: 5px; }
+        .scratch-canvas { position: absolute; top: 0; left: 0; z-index: 2; cursor: pointer; }
+
+        /* =========================================
+           SLIDE 7: GIANT HEART INTERACTION
+           ========================================= */
+        .interactive-box { text-align: center; max-width: 550px; width: 100%; padding: 40px; }
+        .interactive-box h2 { font-family: var(--font-bengali-title); font-size: 1.5rem; font-weight: 700; }
+        .giant-heart-fx { font-size: 4.5rem; margin-top: 20px; opacity: 0; transform: scale(0.5); transition: all 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275); display: inline-block; filter: drop-shadow(0 0 20px var(--accent-pink)); }
+        .giant-heart-fx.boom { opacity: 1; transform: scale(1.2); animation: heartBeat 1s infinite 0.6s alternate; }
+        @keyframes heartBeat { to { transform: scale(1.08); } }
+
+        /* =========================================
+           SLIDE 8: PROGRAMMER TERMINAL (MONOSPACE)
+           ========================================= */
+        .terminal-box { max-width: 600px; width: 100%; border-radius: 16px; overflow: hidden; border: 1px solid rgba(255,255,255,0.05); box-shadow: 0 30px 60px rgba(0,0,0,0.6); }
+        .terminal-bar { background: #0b0914; padding: 12px 20px; display: flex; align-items: center; justify-content: space-between; }
+        .t-dots { display: flex; gap: 8px; }
+        .t-dot { width: 10px; height: 10px; border-radius: 50%; }
+        .t-r { background: #ef4444; } .t-y { background: #f59e0b; } .t-g { background: #10b981; }
+        .t-title { font-family: var(--font-english-body); font-size: 0.78rem; color: var(--text-muted); font-weight: 400; }
+        .terminal-body { background: rgba(6, 4, 10, 0.95); padding: 25px; font-family: 'Courier New', Courier, monospace; font-size: 0.95rem; color: #38bdf8; line-height: 1.8; min-height: 180px; text-align: left; }
+        .t-cursor { display: inline-block; width: 8px; height: 15px; background: #38bdf8; margin-left: 4px; animation: blink 0.9s infinite; vertical-align: middle; }
+        @keyframes blink { 50% { opacity: 0; } }
+
+        /* =========================================
+           SLIDE 9: FINAL ENDING
+           ========================================= */
+        .ending-text { font-family: var(--font-bengali-body); font-size: 1.35rem; line-height: 2.2; color: var(--text-muted); text-align: center; font-weight: 300; }
+        .ending-highlight { 
+            font-family: var(--font-bengali-title); 
+            font-size: 2.2rem; 
+            color: #fff; 
+            display: block; 
+            margin-top: 20px; 
+            font-weight: 800; 
+            background: linear-gradient(45deg, #fff, rgba(255, 255, 255, 0.3)); 
+            -webkit-background-clip: text; 
+            -webkit-text-fill-color: transparent; 
+            text-shadow: 0 0 20px rgba(255,255,255,0.1);
+        }
+
+        /* --- RESPONSIVE FIXES --- */
+        @media (max-width: 850px) {
+            .sms-grid, .gallery-grid { grid-template-columns: 1fr; gap: 15px; max-height: 52vh; overflow-y: auto; padding-right: 5px; }
+            .memory-card { height: 180px; }
+            .hero-title { font-size: 2.2rem; }
+            .section-title { font-size: 1.8rem; margin-bottom: 25px; }
+            .timeline-body { padding: 12px 18px; }
+            .app-slide { align-items: flex-start; padding-top: 65px; }
+        }
+    </style>
+</head>
+<body>
+
+    <canvas id="fx-canvas"></canvas>
+    <div id="cursor-glow"></div>
+    <div class="fog-layer"></div>
+    
+    <svg class="mosque-silhouette" viewBox="0 0 1440 320" xmlns="http://www.w3.org/2000/svg">
+        <path fill="#07040d" d="M0,320 L1440,320 L1440,280 C1400,270 1350,290 1300,280 C1250,270 1220,230 1180,230 C1140,230 1120,260 1080,260 C1040,260 1000,220 950,220 C900,220 870,250 820,250 C770,250 740,190 680,190 C620,190 590,240 540,240 C490,240 450,210 400,210 C350,210 320,260 270,260 C220,260 180,230 130,230 C80,230 40,270 0,280 Z"></path>
+    </svg>
+
+    <div id="loader-screen"><div class="loader-lantern">🪔</div></div>
+
+    <div class="audio-wrapper">
+        <button class="audio-btn" id="audio-toggle" title="Play Nasheed">
+            <svg id="play-icon" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+            <svg id="pause-icon" viewBox="0 0 24 24" style="display:none;"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>
+        </button>
+    </div>
+    <audio id="bg-music" loop src="/PORI _ FULL VIDEO SONG _ PRINCE _ SHAKIB KHAN _ JYOTIRMOYEE _ IMRAN _ KONAL _ CREATIVE LAND FILMS(MP3_160K).mp3"></audio>
+
+
+    <div class="app-slide active-slide" id="slide-1">
+        <div class="container">
+            <div class="hero-sky">
+                <div class="hanging-lantern">🪔</div>
+                <div class="eid-moon">🌙</div>
+                <h1 class="hero-title">ফেরদাউসের জন্য তৈরি হয়ে গেছে 🌙✨</h1>
+                <p class="hero-subtitle">ডিজিটাল কোডের পাতায় সাজানো আমাদের একটি ছোট অনুভূতির আকাশ। মাউস বা স্ক্রিনে ক্লিক করো এবং নিচের বাটন চেপে ভেতরে এসো...</p>
+            </div>
+            <div class="nav-btn-container">
+                <button class="glow-btn" onclick="navigateToSlide(2)">ভেটারে প্রবেশ করুন 💜</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="app-slide" id="slide-2">
+        <div class="container">
+            <h2 class="section-title">হৃদয়ের <span>বার্তাগুলো</span></h2>
+            <div class="sms-grid">
+                <div class="glass-card sms-card" onclick="copySMS(this)">
+                    <p class="sms-text">“ফেরদাউস, এই ঈদের চাঁদের আলো তোমার মুখের হাসির মতোই — কোমল, উজ্জ্বল আর আমার হৃদয় ভরিয়ে দেওয়া। ঈদ মুবারক, প্রিয়। তুমি ভালো থাকো, এটুকুই চাওয়া।”</p>
+                    <div class="sms-card-footer"><span>MESSAGE 01</span><span class="copy-tag">Tap to copy</span></div>
+                </div>
+                <div class="glass-card sms-card" onclick="copySMS(this)">
+                    <p class="sms-text">“তোমাকে ছাড়া ঈদের আনন্দও অসম্পূর্ণ লাগে। তুমি আমার জীবনের সেই মিষ্টি সুর, যেটা ছাড়া বাকি সব নীরব। ঈদের এই বিশেষ দিনে জানাই — তুমি আমার সবচেয়ে সুন্দর অনুভূতি।”</p>
+                    <div class="sms-card-footer"><span>MESSAGE 02</span><span class="copy-tag">Tap to copy</span></div>
+                </div>
+                <div class="glass-card sms-card" onclick="copySMS(this)">
+                    <p class="sms-text">“হাজারো তারার মাঝে একটি তারা যেমন আলাদা হয়ে জ্বলে, তুমি তেমনই আমার কাছে। এই ঈদে দোয়া করি — তোমার প্রতিটি দিন আনন্দে ভরা থাকুক। ঈদ মুবারক, ফেরদাউস 🌙”</p>
+                    <div class="sms-card-footer"><span>MESSAGE 03</span><span class="copy-tag">Tap to copy</span></div>
+                </div>
+            </div>
+            <div class="nav-btn-container">
+                <button class="glow-btn" onclick="navigateToSlide(3)">সামনে চলুন ✨</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="app-slide" id="slide-3">
+        <div class="container">
+            <h2 class="section-title">গোপন <span>অনুভুতি</span></h2>
+            <button class="glow-btn" style="padding: 18px 50px;" onclick="openLoveModal()">আমার মনের কথা 💛</button>
+            <div class="nav-btn-container">
+                <button class="glow-btn" onclick="navigateToSlide(4)">স্মৃতির পাতায় চলুন 🖼️</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="love-modal-overlay">
+        <div class="glass-card love-modal">
+            <div class="giant-ily">I Love You</div>
+            <p class="modal-message">ফেরদাউস, কোডের লজিক আর এলগরিদম দিয়ে হয়তো সব পরিমাপ করা যায়, কিন্তু তোমার প্রতি আমার এই ভালো লাগা কোনো স্ক্রিপ্ট দিয়ে বোঝানো সম্ভব না। এই ওয়েবসাইটটি বানাতে প্রতিটা রাতে যখন কোড লিখছিলাম, আমার ভাবনায় শুধু তুমিই ছিলে।</p>
+            <button class="close-btn glow-btn" style="padding:8px 25px; font-size:0.9rem;" onclick="closeLoveModal()">বন্ধ করুন</button>
+        </div>
+    </div>
+
+    <div class="app-slide" id="slide-4">
+        <div class="container">
+            <h2 class="section-title">স্মৃতির <span>অ্যালবাম</span></h2>
+            <div class="gallery-grid">
+                <div class="memory-card">
+                    <div class="card-inner">
+                        <div class="card-front"><img src="https://i.ibb.co.com/RGfGy9Qj/IMG-7384.jpg" alt=""></div>
+                        <div class="card-back"><h4>প্রথম দেখা</h4><p>যেদিন প্রথম তোমার সাথে কথা বলার সুযোগ হয়েছিল, সেদিনের সেই অনুভূতি আজও ফ্রেমবন্দী হয়ে আছে হৃদয়ে।</p></div>
+                    </div>
+                </div>
+                <div class="memory-card">
+                    <div class="card-inner">
+                        <div class="card-front"><img src="" alt=""></div>
+                        <div class="card-back"><h4>মিষ্টি কথন</h4><p>নির্ঘুম রাতে ঘণ্টার পর ঘণ্টা মেসেজ আদানপ্রদান, যেন পুরো পৃথিবীর নীরবতার মাঝে আমাদের এক আলাদা সুর।</p></div>
+                    </div>
+                </div>
+                <div class="memory-card">
+                    <div class="card-inner">
+                        <div class="card-front"><img src="/IMG_7453.jpg" alt=""></div>
+                        <div class="card-back"><h4>ঈদের আগের রাত</h4><p>চাঁদ দেখার আনন্দের চেয়েও বেশি আনন্দ ছিল তোমার সাথে সেই বিশেষ মুহূর্ত ভাগ করে নেওয়ার মাঝে।</p></div>
+                    </div>
+                </div>
+            </div>
+            <div class="nav-btn-container">
+                <button class="glow-btn" onclick="navigateToSlide(5)">টাইমলাইন দেখুন 📖</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="app-slide" id="slide-5">
+        <div class="container">
+            <h2 class="section-title">তোমার সাথে কাটানো <span>স্মৃতি</span></h2>
+            <div class="timeline-container">
+                <div class="glass-card timeline-item">
+                    <div class="timeline-dot"></div>
+                    <div class="timeline-body">
+                        <span class="timeline-time">PHASE 01 — START</span>
+                        <h3>একটি সাধারণ সংযোগ</h3>
+                        <p>সবকিছুর শুরু যেখানে। কোনো এক সাধারণ মুহূর্তে আমাদের পরিচয় যা আমার রুটিনের পুরো লুপটাই বদলে দিয়েছিল।</p>
+                    </div>
+                </div>
+                <div class="glass-card timeline-item">
+                    <div class="timeline-dot"></div>
+                    <div class="timeline-body">
+                        <span class="timeline-time">PHASE 02 — DEEP BOND</span>
+                        <h3>একটানা কথোপকথন</h3>
+                        <p>স্ক্রিনের নোটিফিকেশনের দিকে তাকিয়ে থাকা। গভীর রাতের প্রতিটি চ্যাট যেন আমার কাছে একেকটা রোমান্টিক সিনেমাটিক গল্প।</p>
+                    </div>
+                </div>
+            </div>
+            <div class="nav-btn-container">
+                <button class="glow-btn" onclick="navigateToSlide(6)">গোপন উপহার খুলুন 🎁</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="app-slide" id="slide-6">
+        <div class="container">
+            <h2 class="section-title">একটি গোপন <span>উপহার</span></h2>
+            <p style="color:var(--text-muted); font-weight:300; text-align:center; margin-bottom: 10px;">কার্ডটির ওপর আঙুল বা মাউস ঘষে স্ক্র্যাচ করে লেখাটি উন্মোচন করো</p>
+            <div class="scratch-card-wrapper">
+                <div class="scratch-secret-text">
+                    <h3>I Love You ❤️</h3>
+                    <p>— Shahin</p>
+                </div>
+                <canvas class="scratch-canvas" id="scratch-canvas" width="320" height="180"></canvas>
+            </div>
+            <div class="nav-btn-container">
+                <button class="glow-btn" onclick="navigateToSlide(7)">অনুভূতির পরীক্ষা 💞</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="app-slide" id="slide-7">
+        <div class="container">
+            <div class="glass-card interactive-box">
+                <h2 style="margin-bottom:20px;">তোমার অনুভূতি কি একই?</h2>
+                <button class="glow-btn" style="padding:12px 35px; font-size:1rem;" onclick="triggerGiantHeart()">আমিও ভালোবাসি</button>
+                <br>
+                <div class="giant-heart-fx" id="giant-heart">💖</div>
+            </div>
+            <div class="nav-btn-container">
+                <button class="glow-btn" onclick="navigateToSlide(8)">কোর ফাইল রান করুন ⌨️</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="app-slide" id="slide-8">
+        <div class="container">
+            <div class="terminal-box">
+                <div class="terminal-bar">
+                    <div class="t-dots"><div class="t-dot t-r"></div><div class="t-dot t-y"></div><div class="t-dot t-g"></div></div>
+                    <div class="t-title">sahin@heart-core:~</div>
+                    <div></div>
+                </div>
+                <div class="terminal-body">
+                    <span id="terminal-text"></span><span class="t-cursor"></span>
+                </div>
+            </div>
+            <div class="nav-btn-container">
+                <button class="glow-btn" onclick="navigateToSlide(9)">শেষ পাতা 🌙</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="app-slide" id="slide-9">
+        <div class="container">
+            <p class="ending-text">
+                Anyway…
+                <br>
+                এটা শুধু একটা website না।
+                <br>
+                এখানে একটু effort ছিল। 🌙
+                <span class="ending-highlight">ঈদ মোবারক, ফেরদাউস।</span>
+            </p>
+        </div>
+    </div>
+
+
+    <script>
+        const STATE = {
+            currentSlide: 1,
+            audioPlaying: false,
+            terminalStarted: false
+        };
+
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                const preloader = document.getElementById('loader-screen');
+                preloader.style.opacity = '0';
+                setTimeout(() => preloader.style.display = 'none', 1000);
+                triggerConfettiExplosion();
+            }, 1200);
+        });
+
+        function navigateToSlide(slideNumber) {
+            if (!STATE.audioPlaying && slideNumber === 2) {
+                toggleAudio();
+            }
+
+            const activeSlide = document.getElementById(`slide-${STATE.currentSlide}`);
+            if (activeSlide) activeSlide.classList.remove('active-slide');
+
+            const nextSlide = document.getElementById(`slide-${slideNumber}`);
+            if (nextSlide) nextSlide.classList.add('active-slide');
+
+            STATE.currentSlide = slideNumber;
+
+            if (slideNumber === 6) {
+                initScratchCard(); 
+            }
+            if (slideNumber === 8) {
+                setTimeout(triggerTerminalProcess, 400);
+            }
+        }
+
+        const glow = document.getElementById('cursor-glow');
+        window.addEventListener('mousemove', (e) => {
+            glow.style.left = e.clientX + 'px';
+            glow.style.top = e.clientY + 'px';
+        });
+
+        const canvas = document.getElementById('fx-canvas');
+        const ctx = canvas.getContext('2d');
+        let elementsArray = [];
+
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+        resizeCanvas();
+        window.addEventListener('resize', resizeCanvas);
+
+        class CanvasElement {
+            constructor(type, isExplosion = false, exX = 0, exY = 0) {
+                this.type = type;
+                this.x = isExplosion ? exX : Math.random() * canvas.width;
+                this.y = isExplosion ? exY : Math.random() * canvas.height;
+                this.size = Math.random() * 3 + 2;
+                this.speedX = isExplosion ? (Math.random() - 0.5) * 6 : (Math.random() - 0.5) * 0.5;
+                this.speedY = isExplosion ? (Math.random() - 0.5) * 6 : -Math.random() * 0.6 - 0.2;
+                this.color = this.getRandomColor();
+                this.alpha = 1;
+                this.decay = isExplosion ? Math.random() * 0.02 + 0.01 : 0;
+            }
+            getRandomColor() {
+                const colors = ['#ec4899', '#8b5cf6', '#a78bfa', '#f472b6', '#ffffff', '#ffd700'];
+                return colors[Math.floor(Math.random() * colors.length)];
+            }
+            draw() {
+                ctx.save();
+                ctx.globalAlpha = this.alpha;
+                ctx.fillStyle = this.color;
+                if (this.type === 'star') {
+                    ctx.beginPath(); ctx.arc(this.x, this.y, this.size * 0.4, 0, Math.PI * 2); ctx.fill();
+                } else if (this.type === 'heart') {
+                    ctx.font = `${this.size * 3}px Arial`; ctx.fillText('❤️', this.x, this.y);
+                } else if (this.type === 'flower') {
+                    ctx.font = `${this.size * 2.5}px Arial`; ctx.fillText('🌸', this.x, this.y);
+                } else if (this.type === 'butterfly') {
+                    ctx.font = `${this.size * 2.5}px Arial`; ctx.fillText('🦋', this.x, this.y);
+                } else if (this.type === 'bird') {
+                    ctx.font = `${this.size * 3}px Arial`; ctx.fillText('🕊️', this.x, this.y);
+                } else if (this.type === 'shooting_star') {
+                    ctx.strokeStyle = 'rgba(255,255,255,0.4)'; ctx.lineWidth = this.size * 0.5;
+                    ctx.beginPath(); ctx.moveTo(this.x, this.y); ctx.lineTo(this.x - this.speedX * 5, this.y - this.speedY * 5); ctx.stroke();
+                }
+                ctx.restore();
+            }
+            update() {
+                this.x += this.speedX; this.y += this.speedY;
+                if (this.decay > 0) this.alpha -= this.decay;
+                if (this.decay === 0) {
+                    if (this.y < -20) this.y = canvas.height + 20;
+                    if (this.x < -20 || this.x > canvas.width + 20) this.x = Math.random() * canvas.width;
+                }
+            }
+        }
+
+        function initFXEngine() {
+            for (let i = 0; i < 100; i++) elementsArray.push(new CanvasElement('star'));
+            for (let i = 0; i < 6; i++) elementsArray.push(new CanvasElement('butterfly'));
+            for (let i = 0; i < 8; i++) elementsArray.push(new CanvasElement('flower'));
+            for (let i = 0; i < 4; i++) elementsArray.push(new CanvasElement('bird'));
+            setInterval(() => { elementsArray.push(new CanvasElement('shooting_star')); }, 4500);
+        }
+        initFXEngine();
+
+        function runFXLoop() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            for (let i = 0; i < elementsArray.length; i++) {
+                elementsArray[i].update();
+                elementsArray[i].draw();
+                if (elementsArray[i].alpha <= 0 || (elementsArray[i].type === 'shooting_star' && elementsArray[i].y > canvas.height)) {
+                    elementsArray.splice(i, 1); i--;
+                }
+            }
+            requestAnimationFrame(runFXLoop);
+        }
+        runFXLoop();
+
+        window.addEventListener('click', (e) => {
+            if(e.target.tagName !== 'BUTTON' && e.target.tagName !== 'CANVAS') {
+                for (let i = 0; i < 8; i++) {
+                    elementsArray.push(new CanvasElement('heart', true, e.clientX, e.clientY));
+                }
+            }
+        });
+
+        function triggerConfettiExplosion() {
+            for (let i = 0; i < 30; i++) {
+                elementsArray.push(new CanvasElement('flower', true, Math.random() * canvas.width, Math.random() * canvas.height));
+            }
+        }
+
+        const audio = document.getElementById('bg-music');
+        const audioBtn = document.getElementById('audio-toggle');
+        const pIcon = document.getElementById('play-icon');
+        const pauseIcon = document.getElementById('pause-icon');
+
+        audioBtn.addEventListener('click', toggleAudio);
+
+        function toggleAudio() {
+            if (STATE.audioPlaying) {
+                let fade = setInterval(() => {
+                    if (audio.volume > 0.1) audio.volume -= 0.1;
+                    else {
+                        clearInterval(fade); audio.pause();
+                        pIcon.style.display = 'block'; pauseIcon.style.display = 'none';
+                    }
+                }, 40);
+            } else {
+                audio.volume = 0;
+                audio.play().catch(err => console.log("Audio secure block caught."));
+                pIcon.style.display = 'none'; pauseIcon.style.display = 'block';
+                let fade = setInterval(() => {
+                    if (audio.volume < 0.9) audio.volume += 0.1;
+                    else { audio.volume = 1; clearInterval(fade); }
+                }, 40);
+            }
+            STATE.audioPlaying = !STATE.audioPlaying;
+        }
+
+        function copySMS(cardElement) {
+            const text = cardElement.querySelector('.sms-text').innerText;
+            navigator.clipboard.writeText(text).then(() => {
+                const tag = cardElement.querySelector('.copy-tag');
+                tag.innerText = "Copied! ✨";
+                
+                const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                const oscillator = audioCtx.createOscillator();
+                const gainNode = audioCtx.createGain();
+                oscillator.type = 'sine'; oscillator.frequency.setValueAtTime(880, audioCtx.currentTime);
+                gainNode.gain.setValueAtTime(0.08, audioCtx.currentTime);
+                gainNode.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.3);
+                oscillator.connect(gainNode); gainNode.connect(audioCtx.destination);
+                oscillator.start(); oscillator.stop(audioCtx.currentTime + 0.3);
+
+                setTimeout(() => { tag.innerText = "Tap to copy"; }, 2000);
+            });
+        }
+
+        function openLoveModal() {
+            document.getElementById('love-modal-overlay').classList.add('open');
+            for (let i = 0; i < 20; i++) elementsArray.push(new CanvasElement('heart', true, window.innerWidth/2, window.innerHeight/2));
+        }
+        function closeLoveModal() { document.getElementById('love-modal-overlay').classList.remove('open'); }
+
+        function triggerGiantHeart() {
+            document.getElementById('giant-heart').classList.add('boom');
+            for (let i = 0; i < 25; i++) {
+                elementsArray.push(new CanvasElement('heart', true, window.innerWidth/2, window.innerHeight/2));
+            }
+        }
+
+        const sCanvas = document.getElementById('scratch-canvas');
+        const sCtx = sCanvas.getContext('2d');
+        let isDrawing = false;
+
+        function initScratchCard() {
+            sCtx.globalCompositeOperation = 'source-over';
+            sCtx.fillStyle = '#2d2454';
+            sCtx.fillRect(0, 0, sCanvas.width, sCanvas.height);
+            sCtx.font = '16px Hind Siliguri, sans-serif';
+            sCtx.fillStyle = 'rgba(255,255,255,0.4)';
+            sCtx.textAlign = 'center';
+            sCtx.fillText('এখানে স্ক্র্যাচ করো 🔍', sCanvas.width / 2, sCanvas.height / 2 + 5);
+        }
+
+        function scratch(e) {
+            if (!isDrawing) return;
+            const rect = sCanvas.getBoundingClientRect();
+            const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+            const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+            const x = clientX - rect.left;
+            const y = clientY - rect.top;
+
+            sCtx.globalCompositeOperation = 'destination-out';
+            sCtx.beginPath(); sCtx.arc(x, y, 22, 0, Math.PI * 2); sCtx.fill();
+        }
+        sCanvas.addEventListener('mousedown', () => isDrawing = true);
+        sCanvas.addEventListener('mouseup', () => isDrawing = false);
+        sCanvas.addEventListener('mousemove', scratch);
+        sCanvas.addEventListener('touchstart', () => isDrawing = true);
+        sCanvas.addEventListener('touchend', () => isDrawing = false);
+        sCanvas.addEventListener('touchmove', scratch);
+
+        function triggerTerminalProcess() {
+            if(STATE.terminalStarted) return;
+            STATE.terminalStarted = true;
+
+            const lines = [
+                "<< Initializing feelings core pipeline interface...\n",
+                "<< Loading emotional structural data arrays... [OK]\n",
+                "<< Scanning network runtime logs for targets...\n",
+                "<< Ferdous detected ❤️\n",
+                "<< Access granted safely to heart.exe"
+            ];
+            const target = document.getElementById('terminal-text');
+            let lineIndex = 0; let charIndex = 0;
+
+            function renderTerminalText() {
+                if(lineIndex < lines.length) {
+                    let textLine = lines[lineIndex];
+                    if(charIndex < textLine.length) {
+                        target.innerHTML += textLine.charAt(charIndex);
+                        charIndex++;
+                        setTimeout(renderTerminalText, 35);
+                    } else {
+                        charIndex = 0; lineIndex++;
+                        setTimeout(renderTerminalText, 300);
+                    }
+                }
+            }
+            renderTerminalText();
+        }
+    </script>
+</body>
+</html>
